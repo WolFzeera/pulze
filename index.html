@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santuário</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        :root {
+            --cor-fundo: #111111;
+            --cor-painel: #1f1f1f;
+            --cor-texto: #e0e0e0;
+            --cor-header: #ffffff;
+            --cor-borda: #333333;
+            --cor-vermelho-brilho: #ff3c3c;
+            --cor-vermelho-escuro: #8B0000;
+            --cor-azul-brilho: #82aaff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+        
+        .overlay-estrelas {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20% 30%, #ffffff, rgba(255,255,255,0)),
+                radial-gradient(1px 1px at 70% 60%, #ffffff, rgba(255,255,255,0)),
+                radial-gradient(2px 2px at 50% 90%, #ffffff, rgba(255,255,255,0)),
+                radial-gradient(1px 1px at 90% 20%, #dddddd, rgba(255,255,255,0));
+            background-repeat: repeat;
+            background-size: 500px 500px;
+            animation: move-stars 60s linear infinite;
+        }
+
+        @keyframes move-stars {
+            from { background-position: 0 0; }
+            to { background-position: 500px 500px; }
+        }
+
+        .santuario-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- FASE 1: ENTRADA --- */
+        #entrada {
+            position: absolute; inset: 0; display: flex;
+            flex-direction: column; justify-content: center;
+            align-items: center; background-color: var(--cor-fundo);
+            z-index: 100; transition: opacity 1.5s ease-in-out;
+        }
+        #entrada.hidden { opacity: 0; pointer-events: none; }
+
+        #frase-entrada {
+            font-family: 'Playfair Display', serif; font-style: italic;
+            font-size: 2rem;
+            max-width: 90%; text-align: center;
+            border-right: 3px solid var(--cor-texto);
+            white-space: nowrap; overflow: hidden;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--cor-texto); } }
+        
+        #btn-permitir {
+            background-color: transparent; border: 2px solid var(--cor-vermelho-escuro);
+            color: var(--cor-vermelho-escuro); padding: 15px 35px;
+            border-radius: 50px; cursor: pointer; margin-top: 2.5em; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px;
+            opacity: 0; animation: fadeInButton 2s ease 4s forwards;
+            transition: all 0.4s ease;
+        }
+        #btn-permitir:hover {
+            background-color: var(--cor-vermelho-escuro); color: var(--cor-texto);
+            box-shadow: 0 0 30px var(--cor-vermelho-brilho); transform: scale(1.05);
+        }
+        @keyframes fadeInButton { to { opacity: 1; } }
+
+        /* --- FASE 2: MAPA ESTELAR --- */
+        #mapa-estelar {
+            position: absolute; inset: 0; opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        #mapa-estelar.visible { opacity: 1; }
+        .estrela {
+            position: absolute; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            width: 180px; height: 180px;
+            cursor: pointer; font-size: 1.5rem;
+            transition: transform 0.4s ease, color 0.4s ease;
+            animation: float 6s ease-in-out infinite;
+            color: var(--cor-texto);
+        }
+        .estrela .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px var(--cor-azul-brilho);
+        }
+        .estrela:hover {
+            transform: scale(1.15);
+            color: white;
+        }
+        @keyframes float { 50% { transform: translateY(-20px); } }
+
+        #labirinto { top: 15vh; left: 15vw; animation-delay: 0s; }
+        #floresta { top: 25vh; right: 20vw; animation-delay: -2s; }
+        #silencio { bottom: 10vh; left: 30vw; animation-delay: -1s; }
+        #forca { bottom: 20vh; right: 10vw; animation-delay: -3s; }
+        #futuro { top: 50vh; left: 50%; transform: translateX(-50%); animation-delay: -0.5s; }
+        
+        /* --- FASE 3: MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 200;
+            inset: 0; background-color: rgba(0,0,0,0.8);
+            justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease; backdrop-filter: blur(5px);
+        }
+        .modal.visible { display: flex; opacity: 1; }
+        .modal-content {
+            background-color: var(--cor-painel); border: 1px solid var(--cor-borda);
+            padding: 2.5em;
+            border-radius: 10px; width: 90%; max-width: 600px;
+            max-height: 80vh; overflow-y: auto; position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-button {
+            position: absolute; top: 15px; right: 25px;
+            font-size: 2.5rem; color: #aaa; cursor: pointer; transition: color 0.3s;
+        }
+        .close-button:hover { color: white; }
+        .modal-body { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.8; font-size: 1.4rem; }
+        .modal-body h2 { font-family: 'Poppins', sans-serif; font-style: normal; color: var(--cor-header); font-size: 2rem; }
+        .modal-body .cursor { display: inline-block; background-color: var(--cor-texto); margin-left: 5px; width: 3px; animation: blink-caret 1s step-end infinite; }
+        audio { width: 100%; margin-top: 1em; filter: invert(1) sepia(0.5) hue-rotate(180deg); }
+
+        /* Otimização para Celular */
+        @media (max-width: 768px) {
+            #frase-entrada { font-size: 1.3rem; animation: typing 3.5s steps(42, end), blink-caret .75s step-end infinite; }
+            .estrela { width: 120px; height: 120px; font-size: 1.1rem; }
+            .estrela .icon { font-size: 2rem; }
+            #labirinto { top: 10vh; left: 5vw; }
+            #floresta { top: 15vh; right: 8vw; }
+            #silencio { width: 130px; height: 130px; bottom: 8vh; left: 10vw; }
+            #forca { width: 110px; height: 110px; bottom: 15vh; right: 5vw; }
+            #futuro { width: 100px; height: 100px; }
+            .modal-body { font-size: 1.1rem; }
+            .modal-body h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-estrelas"></div>
+    <div class="santuario-container">
+        <div id="entrada">
+            <p id="frase-entrada">Eu sei que seu mundo tem muralhas... me permite entrar?</p>
+            <button id="btn-permitir">Permitir</button>
+        </div>
+
+        <div id="mapa-estelar">
+            <div class="estrela" id="labirinto" data-estrela="labirinto"><i class='bx bx-shape-polygon icon'></i>O Labirinto</div>
+            <div class="estrela" id="floresta" data-estrela="floresta"><i class='bx bx-leaf icon'></i>A Floresta</div>
+            <div class="estrela" id="silencio" data-estrela="silencio"><i class='bx bx-headphone icon'></i>O Silêncio</div>
+            <div class="estrela" id="forca" data-estrela="forca"><i class='bx bx-shield-quarter icon'></i>A Força</div>
+            <div class="estrela" id="futuro" data-estrela="futuro"><i class='bx bx-pen icon'></i>O Futuro</div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-button">&times;</span>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const entrada = document.getElementById('entrada');
+            const btnPermitir = document.getElementById('btn-permitir');
+            const mapaEstelar = document.getElementById('mapa-estelar');
+            const estrelas = document.querySelectorAll('.estrela');
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            const closeButton = document.getElementById('close-button');
+
+            // --- TEXTOS ATUALIZADOS ---
+            const conteudos = {
+                labirinto: {
+                    html: `<h2>O Labirinto</h2><p>Meu doce labirinto, tento decifrar-te, mas cada vez que penso ter encontrado a saída, descubro outra curva, outro enigma. Não é um labirinto de paredes frias; é um lugar vivo, onde a complexidade é uma forma de arte. E eu não busco a saída, pois descobri que a paz é aprender a habitar o enigma que é você. Mesmo sem mapa, escolho perder-me em ti.</p><p style="text-align: right;">- Sua eterna prisioneira</p>`
+                },
+                floresta: {
+                    html: `<h2>A Floresta</h2><p>Entre suas árvores escuras e segredos enterrados, me achei. Você não é um jardim arrumado — é mata fechada, é ar puro depois da chuva. Aqui, até o espinho tem beleza. Aqui, eu respiro de verdade. Nem toda floresta assusta. Algumas acolhem.</p><p style="text-align: right;">- Sua exploradora</p>`
+                },
+                silencio: {
+                    html: `<h2>O Silêncio</h2><p>Com você, o silêncio não é vazio. É campo fértil. É onde plantamos entendimentos que palavras não dariam conta. A gente se fala por código binário: olhares, suspiros, toques. Às vezes a melhor declaração de amor é a que a gente cala.</p><p style="text-align: right;">- Sua cúmplice do quieto</p>`
+                },
+                forca: {
+                    html: `<h2>Força</h2><p>Nosso amor não é fogo de palha — é ferro fundido, é raiz entranhada na terra. Segura minhas tempestades e não se desfaz. Aprendi que força não é não cair, mas escolher em qual chão quer cair. E eu caio sempre no seu. Todo dia.</p><p style="text-align: right;">- Sua fortaleza</p>`
+                },
+                futuro: {
+                    html: `<h2>Futuro</h2><p>Planejo amanhãs com suas cores, linhas de código abertas e infinitas. Não prometo dias calmos, mas prometo presença em cada bug, em cada reboot. Você é a única constante nesse algoritmo caótico que chamo de vida. E eu não trocaria isso por nenhum outro script.</p><p style="text-align: right;">- Sua programadora</p>`
+                }
+            };
+
+            btnPermitir.addEventListener('click', () => {
+                entrada.classList.add('hidden');
+                setTimeout(() => {
+                    entrada.style.display = 'none';
+                    mapaEstelar.classList.add('visible');
+                }, 1500);
+            });
+
+            estrelas.forEach(estrela => {
+                estrela.addEventListener('click', () => {
+                    const idEstrela = estrela.dataset.estrela;
+                    const conteudo = conteudos[idEstrela];
+                    modalBody.innerHTML = conteudo.html;
+                    modal.classList.add('visible');
+                });
+            });
+
+            function closeModal() {
+                modal.classList.remove('visible');
+                const audioPlayer = modalBody.querySelector('audio');
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                }
+            }
+
+            closeButton.addEventListener('click', closeModal);
+
+            window.addEventListener('click', (event) => {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
