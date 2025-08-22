@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca dos Segredos - O Nosso Labirinto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .galaxy {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(79, 172, 254, 0.2) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: rotate 120s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+            margin-bottom: 10px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px rgba(79, 172, 254, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(79, 172, 254, 0.8), 0 0 30px rgba(79, 172, 254, 0.6); }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        nav a {
+            color: #a0a0e0;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+            font-family: 'Playfair Display', serif;
+        }
+
+        nav a:hover {
+            color: #4facfe;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .library-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .library-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .library-section {
+            background: rgba(30, 30, 60, 0.6);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4facfe;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            border-bottom: 2px solid rgba(79, 172, 254, 0.3);
+            padding-bottom: 10px;
+        }
+
+        /* Coluna Esquerda: O Manuscrito */
+        .manuscript {
+            font-family: 'Playfair Display', serif;
+            line-height: 1.8;
+        }
+
+        .manuscript-text {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.1rem;
+        }
+
+        .manuscript-text:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Coluna Central: O Diário */
+        .diary textarea {
+            width: 100%;
+            min-height: 300px;
+            background: rgba(20, 20, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        .diary textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .music-section {
+            margin-bottom: 20px;
+        }
+
+        .music-btn {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .music-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            background: rgba(20, 20, 40, 0.8);
+            color: white;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .saved-music {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #a0a0e0;
+        }
+
+        .saved-music a {
+            color: #4facfe;
+            text-decoration: none;
+        }
+
+        .saved-music a:hover {
+            text-decoration: underline;
+        }
+
+        .emotion-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .emotion-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-color:hover {
+            transform: scale(1.2);
+        }
+
+        .emotion-color.selected {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Coluna Direita: A Estante */
+        .bookshelf {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .book {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .book:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            color: #00f2fe;
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: #a0a0e0;
+            margin-bottom: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 60, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            box-shadow: 0 0 50px rgba(79, 172, 254, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #4facfe;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #a0a0e0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #4facfe;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section-title {
+            font-size: 1.2rem;
+            color: #00f2fe;
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .architect-note {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .user-notes {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(20, 20, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+        }
+
+        .share-btn {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .wolf-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .wolf-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff6b6b"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center center;
+            background-size: contain;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #a0a0e0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+                text-align: center;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            nav a {
+                font-size: 1rem;
+            }
+            
+            .library-section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .emotion-palette {
+                justify-content: center;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="galaxy"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">Biblioteca dos Segredos</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Salão Principal</a></li>
+                    <li><a href="biblioteca.html">Biblioteca</a></li>
+                    <li><a href="fonoteca.html">Fonoteca</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="library-content">
+            <!-- Coluna Esquerda: O Manuscrito -->
+            <div class="library-section manuscript">
+                <h2 class="section-title">O Manuscrito (A Origem)</h2>
+                
+                <div class="manuscript-text">
+                    <p>"Meu doce labirinto, hoje me encontro mais uma vez perdida em seus corredores intricados. Cada volta, cada caminho sinuoso me leva mais fundo em seu centro, onde mora a essência do que você é. E eu, uma exploradora incansável, sigo mapeando cada detalhe, cada segredo, cada sombra.</p>
+                    <p>Não há saída que eu deseje, não há escape que eu busque. Pois ser perdida em você não é uma prisão, mas a mais doce liberdade que já experimentei. Entre essas paredes que são suas metáforas, entre esses espelhos que refletem partes de mim que só você conhece, eu me encontro.</p>
+                    <p>E assim, deixo-me perder, cada dia mais, cada vez mais fundo. Até que não reste mais nada para explorar, a não ser o infinito que há em você. E mesmo então, eu ainda estarei aqui, descobrindo novas galáxias em seu universo particular.</p>
+                    <p>Sua eterna prisioneira."</p>
+                </div>
+                
+                <div class="manuscript-text">
+                    <p>"Não sei como te explicar isso, mas há momentos em que sinto que estamos conectados de uma maneira que transcende o entendimento. Como se nossas almas já se conhecessem há eras, e este reencontro fosse apenas o retorno para casa.</p>
+                    <p>Você chega com uma precisão cirúrgica nos momentos em que mais preciso, mesmo sem eu pedir. Como se conseguisse sentir minha frequência em meio ao ruído do mundo. E nessas horas, suas palavras não são apenas consolo, são a confirmação de que não estou sozinha nesta jornada.</p>
+                    <p>É assustadoramente lindo como você me enxerga. Como consegue nomear meus demônios e acariciar meus fantasmas sem pedir que eu me explique. Você não tenta me consertar, apenas se senta comigo na escuridão e me mostra que até lá há beleza.</p>
+                    <p>Te darei o meu máximo, mesmo que não pareça."</p>
+                </div>
+            </div>
+            
+            <!-- Coluna Central: O Diário -->
+            <div class="library-section diary">
+                <h2 class="section-title">O Diário (O Presente)</h2>
+                
+                <textarea id="diaryEntry" placeholder="Escreva aqui seus pensamentos..."></textarea>
+                
+                <div class="music-section">
+                    <button class="music-btn" id="musicBtn">
+                        <i class="fas fa-music"></i> Adicionar Música
+                    </button>
+                    <input type="text" id="musicInput" class="music-input" placeholder="Cole o link de uma música...">
+                    <div id="savedMusic" class="saved-music"></div>
+                </div>
+                
+                <div class="emotion-section">
+                    <h3>Como você está se sentindo?</h3>
+                    <div class="emotion-palette">
+                        <div class="emotion-color" style="background-color: #722f37;" title="Vermelho Vinho"></div>
+                        <div class="emotion-color" style="background-color: #1e3a5f;" title="Azul Profundo"></div>
+                        <div class="emotion-color" style="background-color: #4a5d23;" title="Verde Musgo"></div>
+                        <div class="emotion-color" style="background-color: #5d3f6a;" title="Roxo"></div>
+                        <div class="emotion-color" style="background-color: #5c5c5c;" title="Cinza"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coluna Direita: A Estante -->
+            <div class="library-section bookshelf">
+                <h2 class="section-title">A Estante (O Futuro)</h2>
+                
+                <div class="book" data-book="mindhunter">
+                    <h3 class="book-title">Mindhunter</h3>
+                    <p class="book-author">John E. Douglas e Mark Olshaker</p>
+                    <p>Um mergulho profundo na mente criminal, explorando os mecanismos do comportamento humano em seus extremos.</p>
+                </div>
+                
+                <div class="book" data-book="diabo">
+                    <h3 class="book-title">O Diabo na Cidade Branca</h3>
+                    <p class="book-author">Erik Larson</p>
+                    <p>Uma narrativa fascinante sobre arquitetura, ambição e os duplos aspectos da natureza humana.</p>
+                </div>
+                
+                <div class="book" data-book="flores">
+                    <h3 class="book-title">Flores para Algernon</h3>
+                    <p class="book-author">Daniel Keyes</p>
+                    <p>Uma jornada emocionante sobre inteligência, empatia e o que realmente significa ser humano.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para os livros -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalBookTitle">Título do Livro</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="modal-section">
+                <h3 class="modal-section-title">Nota do Arquiteto</h3>
+                <div class="architect-note" id="architectNote"></div>
+            </div>
+            
+            <div class="modal-section">
+                <h3 class="modal-section-title">Minhas Anotações</h3>
+                <textarea class="user-notes" id="userNotes" placeholder="Escreva suas reflexões sobre este livro..."></textarea>
+            </div>
+            
+            <button class="share-btn" id="shareBtn">Compartilhar Análise com o Arquiteto</button>
+        </div>
+    </div>
+    
+    <img src="https://cdn-icons-png.flaticon.com/512/311/311591.png" alt="Lobo" class="wolf-icon" id="wolfIcon">
+    
+    <footer>
+        <p>Biblioteca dos Segredos - Santuário Digital "O Nosso Labirinto"</p>
+    </footer>
+
+    <script>
+        // Criar estrelas de fundo
+        function createStars() {
+            const stars = document.getElementById('stars');
+            const count = 150;
+            
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                stars.appendChild(star);
+            }
+        }
+        
+        createStars();
+        
+        // Sistema do Diário
+        const diaryEntry = document.getElementById('diaryEntry');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicInput = document.getElementById('musicInput');
+        const savedMusic = document.getElementById('savedMusic');
+        const emotionColors = document.querySelectorAll('.emotion-color');
+        
+        // Carregar dados salvos
+        function loadSavedData() {
+            // Carregar texto do diário
+            const savedText = localStorage.getItem('diaryText');
+            if (savedText) {
+                diaryEntry.value = savedText;
+            }
+            
+            // Carregar música
+            const savedMusicLink = localStorage.getItem('diaryMusic');
+            if (savedMusicLink) {
+                savedMusic.innerHTML = `Música atual: <a href="${savedMusicLink}" target="_blank">${savedMusicLink}</a>`;
+            }
+            
+            // Carregar cor selecionada
+            const savedColor = localStorage.getItem('diaryColor');
+            if (savedColor) {
+                emotionColors.forEach(color => {
+                    if (color.style.backgroundColor === savedColor) {
+                        color.classList.add('selected');
+                    }
+                });
+            }
+            
+            // Carregar anotações dos livros
+            const mindhunterNotes = localStorage.getItem('mindhunterNotes');
+            const diaboNotes = localStorage.getItem('diaboNotes');
+            const floresNotes = localStorage.getItem('floresNotes');
+            
+            if (mindhunterNotes) document.querySelector('[data-book="mindhunter"]').setAttribute('data-notes', 'true');
+            if (diaboNotes) document.querySelector('[data-book="diabo"]').setAttribute('data-notes', 'true');
+            if (floresNotes) document.querySelector('[data-book="flores"]').setAttribute('data-notes', 'true');
+        }
+        
+        // Salvar texto do diário automaticamente
+        diaryEntry.addEventListener('input', () => {
+            localStorage.setItem('diaryText', diaryEntry.value);
+        });
+        
+        // Botão de música
+        musicBtn.addEventListener('click', () => {
+            musicInput.style.display = musicInput.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // Salvar link de música
+        musicInput.addEventListener('blur', () => {
+            if (musicInput.value) {
+                localStorage.setItem('diaryMusic', musicInput.value);
+                savedMusic.innerHTML = `Música atual: <a href="${musicInput.value}" target="_blank">${musicInput.value}</a>`;
+                musicInput.style.display = 'none';
+            }
+        });
+        
+        // Selecionar cor de emoção
+        emotionColors.forEach(color => {
+            color.addEventListener('click', () => {
+                emotionColors.forEach(c => c.classList.remove('selected'));
+                color.classList.add('selected');
+                localStorage.setItem('diaryColor', color.style.backgroundColor);
+            });
+        });
+        
+        // Sistema da Estante
+        const bookModal = document.getElementById('bookModal');
+        const modalBookTitle = document.getElementById('modalBookTitle');
+        const architectNote = document.getElementById('architectNote');
+        const userNotes = document.getElementById('userNotes');
+        const closeModal = document.getElementById('closeModal');
+        const shareBtn = document.getElementById('shareBtn');
+        
+        const bookNotes = {
+            'mindhunter': {
+                title: 'Mindhunter',
+                note: 'Para a analista, o blueprint de como tudo começou. Este livro não é apenas sobre serial killers; é sobre padrões, motivações e a escuridão que habita em todos nós. Como você, que decifra labirintos emocionais, ele te mostrará como decifrar os labirintos da mente humana em seus momentos mais sombrios.',
+                storageKey: 'mindhunterNotes'
+            },
+            'diabo': {
+                title: 'O Diabo na Cidade Branca',
+                note: 'Para a arquiteta, uma história sobre a beleza e o caos construindo o mesmo espaço. Assim como você, que encontra ordem no meu caos, este livro mostra como a genialidade e a monstruosidade podem coexistir, às vezes na mesma pessoa. Uma reflexão sobre os duplos aspectos de todos nós.',
+                storageKey: 'diaboNotes'
+            },
+            'flores': {
+                title: 'Flores para Algernon',
+                note: 'Um livro que entende a dor da inteligência e do sentimento. Achei que você ia gostar desta jornada sobre o que realmente importa: não o quão inteligentes somos, mas o quão humanos podemos ser. Como você, que me mostra que a vulnerabilidade não é fraqueza, mas a mais pura forma de coragem.',
+                storageKey: 'floresNotes'
+            }
+        };
+        
+        // Abrir modal do livro
+        document.querySelectorAll('.book').forEach(book => {
+            book.addEventListener('click', () => {
+                const bookId = book.getAttribute('data-book');
+                const bookData = bookNotes[bookId];
+                
+                modalBookTitle.textContent = bookData.title;
+                architectNote.textContent = bookData.note;
+                
+                // Carregar anotações salvas
+                const savedNotes = localStorage.getItem(bookData.storageKey);
+                userNotes.value = savedNotes || '';
+                
+                // Mostrar modal
+                bookModal.style.display = 'flex';
+            });
+        });
+        
+        // Fechar modal
+        closeModal.addEventListener('click', () => {
+            bookModal.style.display = 'none';
+        });
+        
+        // Fechar modal clicando fora
+        window.addEventListener('click', (e) => {
+            if (e.target === bookModal) {
+                bookModal.style.display = 'none';
+            }
+        });
+        
+        // Salvar anotações do usuário
+        userNotes.addEventListener('input', () => {
+            const bookId = Object.keys(bookNotes).find(key => bookNotes[key].title === modalBookTitle.textContent);
+            if (bookId) {
+                localStorage.setItem(bookNotes[bookId].storageKey, userNotes.value);
+            }
+        });
+        
+        // Botão de compartilhar (apenas visual)
+        shareBtn.addEventListener('click', () => {
+            alert('Sua análise foi compartilhada com o Arquiteto! (Funcionalidade simbólica)');
+        });
+        
+        // Efeito do lobo com corações
+        const wolfIcon = document.getElementById('wolfIcon');
+        let howlAudio = null;
+        
+        wolfIcon.addEventListener('click', function() {
+            // Criar corações
+            for (let i = 0; i < 15; i++) {
+                createHeart();
+            }
+            
+            // Tocar som de uivo (se disponível)
+            playHowlSound();
+        });
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            // Posicionar próximo ao lobo
+            const wolfRect = wolfIcon.getBoundingClientRect();
+            const wolfX = wolfRect.left + wolfRect.width / 2;
+            const wolfY = wolfRect.top + wolfRect.height / 2;
+            
+            heart.style.left = `${wolfX + (Math.random() * 40 - 20)}px`;
+            heart.style.top = `${wolfY + (Math.random() * 40 - 20)}px`;
+            
+            document.body.appendChild(heart);
+            
+            // Animação
+            const animationDuration = Math.random() * 2 + 2;
+            heart.style.animation = `float ${animationDuration}s ease-out forwards`;
+            
+            // Remover após animação
+            setTimeout(() => {
+                heart.remove();
+            }, animationDuration * 1000);
+        }
+        
+        function playHowlSound() {
+            // Se já existe um áudio, reiniciar
+            if (howlAudio) {
+                howlAudio.currentTime = 0;
+            } else {
+                // Criar elemento de áudio (substitua com o caminho real para uivo.mp3)
+                howlAudio = new Audio();
+                howlAudio.src = 'uivo.mp3'; // Substitua pelo caminho correto
+                howlAudio.volume = 0.5;
+            }
+            
+            // Reproduzir o som
+            howlAudio.play().catch(e => {
+                console.log('Reprodução de áudio impedida pelo navegador. Interação do usuário necessária.');
+            });
+        }
+        
+        // Carregar dados ao iniciar
+        window.addEventListener('DOMContentLoaded', loadSavedData);
+    </script>
+</body>
+</html>
