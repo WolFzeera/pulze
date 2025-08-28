@@ -15,44 +15,84 @@
         .galaxy { position: fixed; top: 50%; left: 50%; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle at center, rgba(79, 172, 254, 0.2) 0%, transparent 70%); transform: translate(-50%, -50%); z-index: -1; animation: rotate 120s linear infinite; }
         @keyframes rotate { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; z-index: 1; position: relative; }
-        header { display: flex; flex-direction: column; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .logo { font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 700; background: linear-gradient(90deg, #4facfe, #00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(79, 172, 254, 0.5); margin-bottom: 10px; animation: glow 3s ease-in-out infinite alternate; }
+        
+        /* Header e Navegação - Mobile First */
+        header { display: flex; flex-direction: column; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: relative; }
+        .logo { font-family: 'Cinzel', serif; font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, #4facfe, #00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(79, 172, 254, 0.5); margin-bottom: 15px; animation: glow 3s ease-in-out infinite alternate; text-align: center; }
         @keyframes glow { 0% { text-shadow: 0 0 10px rgba(79, 172, 254, 0.5); } 100% { text-shadow: 0 0 20px rgba(79, 172, 254, 0.8), 0 0 30px rgba(79, 172, 254, 0.6); } }
-        nav ul { display: flex; list-style: none; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
-        nav a { color: #a0a0e0; text-decoration: none; font-size: 1.1rem; transition: color 0.3s ease; position: relative; padding: 5px 0; font-family: 'Playfair Display', serif; }
-        nav a:hover { color: #4facfe; }
+        
+        /* Menu Hamburger para Mobile */
+        .menu-toggle { display: none; position: absolute; top: 25px; right: 20px; cursor: pointer; z-index: 1000; background: rgba(0, 0, 0, 0.7); border-radius: 5px; padding: 5px 10px; border: 1px solid rgba(79, 172, 254, 0.3); }
+        .menu-toggle i { font-size: 1.5rem; color: #4facfe; }
+        
+        nav { width: 100%; }
+        nav ul { display: flex; flex-direction: column; list-style: none; gap: 0; max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+        nav ul.active { max-height: 500px; }
+        nav li { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        nav a { display: block; color: #a0a0e0; text-decoration: none; font-size: 1.1rem; transition: all 0.3s ease; position: relative; padding: 12px 15px; font-family: 'Playfair Display', serif; text-align: center; }
+        nav a:hover { color: #4facfe; background: rgba(79, 172, 254, 0.1); }
         nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #4facfe, #00f2fe); transition: width 0.3s ease; }
         nav a:hover::after { width: 100%; }
-        .podcast-header { text-align: center; padding: 40px 0; }
-        .podcast-info { background: rgba(30, 30, 60, 0.6); border-radius: 20px; padding: 25px; margin: 0 auto 40px; max-width: 800px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); border: 1px solid rgba(79, 172, 254, 0.3); display: flex; flex-direction: column; align-items: center; }
-        .podcast-cover { width: 250px; height: 250px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
-        .podcast-title { font-size: 2.2rem; margin-bottom: 15px; color: #00f2fe; font-family: 'Playfair Display', serif; }
-        .podcast-description { color: #a0a0e0; line-height: 1.6; text-align: center; margin-bottom: 20px; }
-        .episodes-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 40px; }
-        .episode { background: rgba(30, 30, 60, 0.6); border-radius: 20px; padding: 25px; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); border: 1px solid rgba(79, 172, 254, 0.3); }
+        
+        .podcast-header { text-align: center; padding: 30px 0; }
+        .podcast-info { background: rgba(30, 30, 60, 0.6); border-radius: 15px; padding: 20px; margin: 0 auto 30px; max-width: 800px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); border: 1px solid rgba(79, 172, 254, 0.3); display: flex; flex-direction: column; align-items: center; }
+        .podcast-cover { width: 200px; height: 200px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .podcast-title { font-size: 1.8rem; margin-bottom: 12px; color: #00f2fe; font-family: 'Playfair Display', serif; line-height: 1.3; }
+        .podcast-description { color: #a0a0e0; line-height: 1.6; text-align: center; margin-bottom: 15px; font-size: 0.95rem; }
+        .episodes-container { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
+        .episode { background: rgba(30, 30, 60, 0.6); border-radius: 15px; padding: 20px; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); border: 1px solid rgba(79, 172, 254, 0.3); }
         .episode:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 30px rgba(79, 172, 254, 0.5); }
-        .episode-cover { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-        .episode-title { font-size: 1.4rem; margin-bottom: 10px; color: #4facfe; font-family: 'Playfair Display', serif; }
-        .episode-date { color: #a0a0e0; font-size: 0.9rem; margin-bottom: 15px; }
-        .episode-description { color: #a0a0e0; line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; max-height: 100px; overflow-y: auto; }
-        .episode-description::-webkit-scrollbar { width: 5px; }
+        .episode-cover { width: 100%; border-radius: 10px; margin-bottom: 12px; }
+        .episode-title { font-size: 1.2rem; margin-bottom: 8px; color: #4facfe; font-family: 'Playfair Display', serif; line-height: 1.3; }
+        .episode-date { color: #a0a0e0; font-size: 0.85rem; margin-bottom: 12px; }
+        .episode-description { color: #a0a0e0; line-height: 1.5; font-size: 0.9rem; margin-bottom: 15px; max-height: 120px; overflow-y: auto; padding-right: 5px; }
+        .episode-description::-webkit-scrollbar { width: 4px; }
         .episode-description::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 10px; }
-        .episode-player { width: 100%; height: 40px; border-radius: 5px; margin-top: 15px; }
-        .loading { text-align: center; padding: 40px; color: #4facfe; font-size: 1.2rem; }
-        footer { text-align: center; padding: 30px 0; color: #a0a0e0; margin-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.9rem; }
-        @media (max-width: 768px) {
-            .logo { font-size: 2.5rem; }
-            nav ul { gap: 15px; }
-            nav a { font-size: 1rem; }
-            .podcast-cover { width: 200px; height: 200px; }
-            .podcast-title { font-size: 1.8rem; }
-            .episodes-container { grid-template-columns: 1fr; }
+        .episode-player { width: 100%; height: 80px; border-radius: 8px; margin-top: 12px; border: none; }
+        .loading { text-align: center; padding: 30px; color: #4facfe; font-size: 1.1rem; }
+        footer { text-align: center; padding: 25px 0; color: #a0a0e0; margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.85rem; }
+        
+        /* Media Queries para telas maiores */
+        @media (min-width: 768px) {
+            .logo { font-size: 3rem; margin-bottom: 20px; }
+            .menu-toggle { display: none; }
+            nav ul { flex-direction: row; max-height: none; gap: 25px; justify-content: center; }
+            nav li { border-bottom: none; }
+            nav a { padding: 5px 0; }
+            .podcast-cover { width: 250px; height: 250px; }
+            .podcast-title { font-size: 2.2rem; }
+            .episodes-container { grid-template-columns: repeat(2, 1fr); }
+            header { flex-direction: row; justify-content: space-between; padding: 25px 0; }
+            .logo { margin-bottom: 0; text-align: left; }
+            nav { width: auto; }
         }
+        
+        @media (min-width: 992px) {
+            .logo { font-size: 3.5rem; }
+            .episodes-container { grid-template-columns: repeat(3, 1fr); }
+            nav ul { gap: 30px; }
+        }
+        
         @media (max-width: 480px) {
+            .container { padding: 15px; }
             .logo { font-size: 2rem; }
-            .podcast-cover { width: 150px; height: 150px; }
+            .podcast-cover { width: 160px; height: 160px; }
             .podcast-title { font-size: 1.5rem; }
-            .episode { padding: 20px; }
+            .podcast-info { padding: 15px; }
+            .episode { padding: 15px; }
+            .episode-player { height: 70px; }
+        }
+        
+        /* Melhorias de acessibilidade para toques em dispositivos móveis */
+        @media (hover: none) {
+            .episode:hover { transform: none; }
+            nav a:hover { background: transparent; }
+            nav a:hover::after { width: 0; }
+        }
+        
+        /* Ajustes para desktop com hover */
+        @media (hover: hover) {
+            nav a:hover::after { width: 100%; }
         }
     </style>
 </head>
@@ -63,8 +103,11 @@
     <div class="container">
         <header>
             <div class="logo">O Nosso Labirinto</div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
             <nav>
-                <ul>
+                <ul id="navMenu">
                     <li><a href="index.html">Salão Principal</a></li>
                     <li><a href="biblioteca.html">Biblioteca</a></li>
                     <li><a href="fonoteca.html">Fonoteca</a></li>
@@ -102,6 +145,46 @@
         // Elementos DOM
         const podcastInfo = document.getElementById('podcastInfo');
         const episodesContainer = document.getElementById('episodesContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        // Menu toggle para mobile
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            if (navMenu.classList.contains('active')) {
+                menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+        
+        // Fechar menu ao clicar em um link (mobile)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    navMenu.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+        
+        // Ajustar menu conforme tamanho da tela
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                navMenu.classList.remove('active');
+                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                menuToggle.style.display = 'none';
+            } else {
+                menuToggle.style.display = 'block';
+            }
+        });
+        
+        // Inicializar conforme tamanho da tela
+        if (window.innerWidth >= 768) {
+            menuToggle.style.display = 'none';
+        } else {
+            menuToggle.style.display = 'block';
+        }
         
         // Criar estrelas de fundo
         function createStars() {
